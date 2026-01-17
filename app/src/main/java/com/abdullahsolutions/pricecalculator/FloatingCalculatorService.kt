@@ -24,7 +24,8 @@ class FloatingCalculatorService : Service() {
     private lateinit var floatingView: View
     private lateinit var collapsedView: View
     private lateinit var expandedView: View
-    
+    private lateinit var settingsManager: SettingsManager
+
     private val df = DecimalFormat("#,##0.0000")
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -34,6 +35,7 @@ class FloatingCalculatorService : Service() {
         super.onCreate()
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        settingsManager = SettingsManager(this)
 
         floatingView = LayoutInflater.from(this).inflate(R.layout.floating_calculator, null)
 
@@ -90,23 +92,47 @@ class FloatingCalculatorService : Service() {
 
         // Setup calculator logic
         val inputField = floatingView.findViewById<EditText>(R.id.input_price)
-        val profit20 = floatingView.findViewById<TextView>(R.id.value_profit_20)
-        val profit10 = floatingView.findViewById<TextView>(R.id.value_profit_10)
-        val loss20 = floatingView.findViewById<TextView>(R.id.value_loss_20)
-        val loss30 = floatingView.findViewById<TextView>(R.id.value_loss_30)
+        val profit1Value = floatingView.findViewById<TextView>(R.id.value_profit_1)
+        val profit2Value = floatingView.findViewById<TextView>(R.id.value_profit_2)
+        val loss1Value = floatingView.findViewById<TextView>(R.id.value_loss_1)
+        val loss2Value = floatingView.findViewById<TextView>(R.id.value_loss_2)
+
+        // Setup labels from settings
+        val labelProfit1 = floatingView.findViewById<TextView>(R.id.label_profit_1)
+        val labelProfit2 = floatingView.findViewById<TextView>(R.id.label_profit_2)
+        val labelLoss1 = floatingView.findViewById<TextView>(R.id.label_loss_1)
+        val labelLoss2 = floatingView.findViewById<TextView>(R.id.label_loss_2)
+
+        // Get percentage values from settings
+        val profit1Pct = settingsManager.profit1
+        val profit2Pct = settingsManager.profit2
+        val loss1Pct = settingsManager.loss1
+        val loss2Pct = settingsManager.loss2
+
+        // Update labels with current settings
+        labelProfit1.text = "+${profit1Pct}%"
+        labelProfit2.text = "+${profit2Pct}%"
+        labelLoss1.text = "-${loss1Pct}%"
+        labelLoss2.text = "-${loss2Pct}%"
+
+        // Calculate multipliers
+        val profit1Mult = 1 + (profit1Pct / 100.0)
+        val profit2Mult = 1 + (profit2Pct / 100.0)
+        val loss1Mult = 1 - (loss1Pct / 100.0)
+        val loss2Mult = 1 - (loss2Pct / 100.0)
 
         inputField.addTextChangedListener { text ->
             val value = text.toString().toDoubleOrNull()
             if (value != null) {
-                profit20.text = df.format(value * 1.20)
-                profit10.text = df.format(value * 1.10)
-                loss20.text = df.format(value * 0.80)
-                loss30.text = df.format(value * 0.70)
+                profit1Value.text = df.format(value * profit1Mult)
+                profit2Value.text = df.format(value * profit2Mult)
+                loss1Value.text = df.format(value * loss1Mult)
+                loss2Value.text = df.format(value * loss2Mult)
             } else {
-                profit20.text = "—"
-                profit10.text = "—"
-                loss20.text = "—"
-                loss30.text = "—"
+                profit1Value.text = "—"
+                profit2Value.text = "—"
+                loss1Value.text = "—"
+                loss2Value.text = "—"
             }
         }
 

@@ -112,6 +112,7 @@
             android:paddingVertical="10dp">
 
             <TextView
+                android:id="@+id/label_profit_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -121,7 +122,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/value_profit_20"
+                android:id="@+id/value_profit_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="—"
@@ -144,6 +145,7 @@
             android:paddingVertical="10dp">
 
             <TextView
+                android:id="@+id/label_profit_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -153,7 +155,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/value_profit_10"
+                android:id="@+id/value_profit_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="—"
@@ -196,6 +198,7 @@
             android:paddingVertical="10dp">
 
             <TextView
+                android:id="@+id/label_loss_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -205,7 +208,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/value_loss_20"
+                android:id="@+id/value_loss_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="—"
@@ -229,6 +232,7 @@
             android:paddingVertical="10dp">
 
             <TextView
+                android:id="@+id/label_loss_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -238,7 +242,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/value_loss_30"
+                android:id="@+id/value_loss_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="—"
