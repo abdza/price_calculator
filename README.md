@@ -70,9 +70,11 @@ Alternatively, from command line:
 app/
 ├── src/main/
 │   ├── java/com/abdullahsolutions/pricecalculator/
-│   │   └── MainActivity.kt          # Main app code with Compose UI
+│   │   ├── MainActivity.kt              # Launcher screen with Compose UI
+│   │   └── FloatingCalculatorService.kt # Floating overlay service
 │   ├── res/
-│   │   ├── drawable/                 # App icons
+│   │   ├── drawable/                 # App icons and backgrounds
+│   │   ├── layout/                   # Floating calculator layout
 │   │   ├── mipmap-anydpi-v26/       # Adaptive icons
 │   │   ├── values/                   # Colors, strings, themes
 │   │   └── xml/                      # Backup rules
@@ -86,7 +88,6 @@ app/
 - **Kotlin** - Modern Android development language
 - **Jetpack Compose** - Declarative UI framework
 - **Material 3** - Latest Material Design components
-- **Edge-to-edge** - Full screen experience
 
 ## Customization
 
