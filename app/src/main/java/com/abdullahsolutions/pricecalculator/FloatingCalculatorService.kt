@@ -71,8 +71,10 @@ class FloatingCalculatorService : Service() {
         collapsedView.setOnClickListener {
             collapsedView.visibility = View.GONE
             expandedView.visibility = View.VISIBLE
-            // Make focusable when expanded so keyboard works
-            params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+            // Keep non-focusable initially so background apps can still receive keyboard input
+            // Use FLAG_NOT_TOUCH_MODAL to allow touches outside to pass through
+            params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
             windowManager.updateViewLayout(floatingView, params)
         }
 
@@ -134,6 +136,39 @@ class FloatingCalculatorService : Service() {
                 loss1Value.text = "—"
                 loss2Value.text = "—"
             }
+        }
+
+        // When user taps the input field, make window focusable so keyboard appears
+        inputField.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && expandedView.visibility == View.VISIBLE) {
+                // Make focusable so keyboard can appear for our input
+                params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                        WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                windowManager.updateViewLayout(floatingView, params)
+                inputField.requestFocus()
+            }
+            false // Don't consume the event, let EditText handle it normally
+        }
+
+        // When input loses focus, make window non-focusable so background apps can use keyboard
+        inputField.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && expandedView.visibility == View.VISIBLE) {
+                params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                windowManager.updateViewLayout(floatingView, params)
+            }
+        }
+
+        // Detect touches outside the floating calculator to release focus
+        floatingView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_OUTSIDE && expandedView.visibility == View.VISIBLE) {
+                // User touched outside, make non-focusable so background apps can get keyboard
+                inputField.clearFocus()
+                params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                windowManager.updateViewLayout(floatingView, params)
+            }
+            false
         }
 
         // Setup drag functionality
