@@ -98,6 +98,9 @@ class FloatingCalculatorService : Service() {
         val profit2Value = floatingView.findViewById<TextView>(R.id.value_profit_2)
         val loss1Value = floatingView.findViewById<TextView>(R.id.value_loss_1)
         val loss2Value = floatingView.findViewById<TextView>(R.id.value_loss_2)
+        val maxUnitsValue = floatingView.findViewById<TextView>(R.id.value_max_units)
+        val maxTotalValue = floatingView.findViewById<TextView>(R.id.value_max_total)
+        val labelMaxTradeSection = floatingView.findViewById<TextView>(R.id.label_max_trade_section)
 
         // Setup labels from settings
         val labelProfit1 = floatingView.findViewById<TextView>(R.id.label_profit_1)
@@ -110,6 +113,10 @@ class FloatingCalculatorService : Service() {
         val profit2Pct = settingsManager.profit2
         val loss1Pct = settingsManager.loss1
         val loss2Pct = settingsManager.loss2
+        val maxTradeValue = settingsManager.maxTradeValue
+
+        // Update max trade section label
+        labelMaxTradeSection.text = "MAX TRADE ($${String.format("%.2f", maxTradeValue)})"
 
         // Update labels with current settings
         labelProfit1.text = "+${profit1Pct}%"
@@ -125,16 +132,24 @@ class FloatingCalculatorService : Service() {
 
         inputField.addTextChangedListener { text ->
             val value = text.toString().toDoubleOrNull()
-            if (value != null) {
+            if (value != null && value > 0) {
                 profit1Value.text = df.format(value * profit1Mult)
                 profit2Value.text = df.format(value * profit2Mult)
                 loss1Value.text = df.format(value * loss1Mult)
                 loss2Value.text = df.format(value * loss2Mult)
+
+                // Calculate max units and max total
+                val maxUnits = (maxTradeValue / value).toInt()
+                val maxTotal = maxUnits * value
+                maxUnitsValue.text = maxUnits.toString()
+                maxTotalValue.text = "$${String.format("%.2f", maxTotal)}"
             } else {
                 profit1Value.text = "—"
                 profit2Value.text = "—"
                 loss1Value.text = "—"
                 loss2Value.text = "—"
+                maxUnitsValue.text = "—"
+                maxTotalValue.text = "—"
             }
         }
 

@@ -271,6 +271,17 @@ fun LauncherScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Max Trade Value card
+        InfoCard(
+            modifier = Modifier.fillMaxWidth(),
+            emoji = "💰",
+            title = "Max Trade",
+            values = "$${String.format("%.2f", settingsManager.maxTradeValue)}",
+            color = Color(0xFF58A6FF)
+        )
+
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
@@ -293,6 +304,7 @@ fun SettingsScreen(
     var profit2 by remember { mutableStateOf(settingsManager.profit2.toString()) }
     var loss1 by remember { mutableStateOf(settingsManager.loss1.toString()) }
     var loss2 by remember { mutableStateOf(settingsManager.loss2.toString()) }
+    var maxTradeValue by remember { mutableStateOf(settingsManager.maxTradeValue.toString()) }
 
     Column(
         modifier = Modifier
@@ -426,6 +438,29 @@ fun SettingsScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Max Trade Value Section
+        Text(
+            text = "MAX TRADE VALUE",
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                color = Color(0xFF58A6FF)
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        CurrencyInput(
+            modifier = Modifier.fillMaxWidth(),
+            label = "Maximum amount per trade",
+            value = maxTradeValue,
+            onValueChange = { maxTradeValue = it }
+        )
+
         Spacer(modifier = Modifier.height(32.dp))
 
         // Save button
@@ -435,6 +470,7 @@ fun SettingsScreen(
                 profit2.toIntOrNull()?.let { settingsManager.profit2 = it }
                 loss1.toIntOrNull()?.let { settingsManager.loss1 = it }
                 loss2.toIntOrNull()?.let { settingsManager.loss2 = it }
+                maxTradeValue.toDoubleOrNull()?.let { settingsManager.maxTradeValue = it }
                 onBack()
             },
             modifier = Modifier
@@ -465,6 +501,7 @@ fun SettingsScreen(
                 profit2 = SettingsManager.DEFAULT_PROFIT_2.toString()
                 loss1 = SettingsManager.DEFAULT_LOSS_1.toString()
                 loss2 = SettingsManager.DEFAULT_LOSS_2.toString()
+                maxTradeValue = SettingsManager.DEFAULT_MAX_TRADE_VALUE.toString()
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -552,6 +589,59 @@ fun PercentageInput(
                 focusedBorderColor = accentColor,
                 unfocusedBorderColor = Color(0xFF30363D),
                 cursorColor = accentColor
+            ),
+            shape = RoundedCornerShape(8.dp)
+        )
+    }
+}
+
+@Composable
+fun CurrencyInput(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = TextStyle(
+                fontSize = 12.sp,
+                color = Color(0xFF8B949E)
+            )
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = { newValue ->
+                // Allow numbers and one decimal point
+                if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
+                    onValueChange(newValue)
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFE6EDF3)
+            ),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            prefix = {
+                Text(
+                    text = "$",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = Color(0xFF58A6FF)
+                    )
+                )
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF58A6FF),
+                unfocusedBorderColor = Color(0xFF30363D),
+                cursorColor = Color(0xFF58A6FF)
             ),
             shape = RoundedCornerShape(8.dp)
         )
